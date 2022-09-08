@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 public class Task {
 
     private final Consumer<Task> consumer;
+    private final Consumer<TickEvent.ServerTickEvent> event;
 
     private final long interval;
     private long currentIteration;
@@ -26,7 +27,8 @@ public class Task {
         if (delay > 0) {
             ticksRemaining = delay;
         }
-        MinecraftForge.EVENT_BUS.register(this);
+        this.event = this::onServerTick;
+        MinecraftForge.EVENT_BUS.addListener(this.event);
     }
 
     public boolean isExpired() {
@@ -54,12 +56,11 @@ public class Task {
         }
     }
 
-    @SubscribeEvent
     public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             tick();
             if (isExpired()) {
-                MinecraftForge.EVENT_BUS.unregister(this);
+                MinecraftForge.EVENT_BUS.unregister(this.event);
             }
         }
     }
