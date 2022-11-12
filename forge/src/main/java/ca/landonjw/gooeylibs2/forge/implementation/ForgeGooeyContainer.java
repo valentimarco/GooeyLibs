@@ -14,11 +14,14 @@ import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.slot.TemplateSlot;
 import ca.landonjw.gooeylibs2.api.template.slot.TemplateSlotDelegate;
 import ca.landonjw.gooeylibs2.api.template.types.InventoryTemplate;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.protocol.game.ClientboundContainerSetContentPacket;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.network.protocol.game.ClientboundOpenScreenPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -75,13 +78,14 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
 
     private void bindSlots() {
         List<TemplateSlotDelegate> delegates = page.getTemplate().getSlots();
-        for (int i = 0; i < slots.size(); i++) {
+        int slotIndex = 0;
+        for (int i = 0; i < delegates.size(); i++) {
             final int index = i;
             final TemplateSlotDelegate delegate = delegates.get(i);
             final TemplateSlot slot = new TemplateSlot(this.container, delegate, 0, 0);
-
             delegate.subscribe(this, () -> this.updateSlotStack(index, getItemAtSlot(index), false));
             this.addSlot(slot);
+            this.container.setItem(slotIndex++, slot.getItem());
         }
 
         /*
@@ -94,6 +98,7 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
                 final GooeyButton button = GooeyButton.of(player.getInventory().items.get(i));
                 final TemplateSlotDelegate delegate = new TemplateSlotDelegate(button, i - 9);
                 addSlot(new TemplateSlot(this.container, delegate, 0, 0));
+                this.container.setItem(slotIndex++, button.getDisplay());
             }
             // Sets the slots for the hotbar.
             for (int i = 0; i < 9; i++) {
@@ -101,6 +106,7 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
                 final TemplateSlotDelegate delegate = new TemplateSlotDelegate(button, i + 27);
 
                 addSlot(new TemplateSlot(this.container, delegate, 0, 0));
+                this.container.setItem(slotIndex++, button.getDisplay());
             }
         } else {
             for (int i = 0; i < inventoryTemplate.getSize(); i++) {
@@ -112,6 +118,7 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
 
                 delegate.subscribe(this, () -> this.updateSlotStack(index, getItemAtSlot(itemSlot), true));
                 addSlot(slot);
+                this.container.setItem(itemSlot, slot.getItem());
             }
         }
     }
@@ -120,19 +127,16 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
         this.slots.forEach(slot -> {
             ((TemplateSlot) slot).getDelegate().unsubscribe(this);
         });
-        if (inventoryTemplate != null) {
-            inventoryTemplate.getSlots().forEach(slot -> slot.unsubscribe(this));
-        }
+        this.inventoryTemplate.getSlots().forEach(delegate -> delegate.unsubscribe(this));
     }
 
     private void updateSlotStack(int index, ItemStack stack, boolean playerInventory) {
-        if (playerInventory) {
-            ClientboundContainerSetSlotPacket setSlot = new ClientboundContainerSetSlotPacket(this.containerId, this.player.containerMenu.getStateId(), page.getTemplate().getSize() + index, stack);
-            player.connection.send(setSlot);
-        } else {
-            ClientboundContainerSetSlotPacket setSlot = new ClientboundContainerSetSlotPacket(this.containerId, this.player.containerMenu.getStateId(), index, stack);
-            player.connection.send(setSlot);
-        }
+        player.connection.send(new ClientboundContainerSetSlotPacket(
+                this.containerId,
+                this.player.containerMenu.getStateId(),
+                playerInventory ? page.getTemplate().getSize() + index : index,
+                stack
+        ));
     }
 
     private int getTemplateIndex(int slotIndex) {
@@ -163,21 +167,20 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
         return slots.get(slot).getItem();
     }
 
-    private Button getButton(int slot) {
+    private TemplateSlotDelegate getReference(int slot) {
         if (slot < 0) return null;
 
         //Check if it's player's inventory or UI slot
         if (slot >= page.getTemplate().getSize()) {
-
             int targetedPlayerSlotIndex = slot - page.getTemplate().getSize();
 
             if (inventoryTemplate != null) {
-                return inventoryTemplate.getSlot(targetedPlayerSlotIndex).getButton().orElse(null);
+                return this.inventoryTemplate.getSlot(targetedPlayerSlotIndex);
             } else {
                 return null;
             }
         } else {
-            return page.getTemplate().getSlot(slot).getButton().orElse(null);
+            return page.getTemplate().getSlot(slot);
         }
     }
 
@@ -194,10 +197,11 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
                 player.containerCounter,
                 page.getTemplate().getTemplateType().getContainerType(page.getTemplate()),
                 page.getTitle()
-//                page.getTemplate().getTemplateType() == TemplateType.CRAFTING_TABLE ? 0 : page.getTemplate().getSize() TODO: Check this works
         );
         player.connection.send(openWindow);
         updateAllContainerContents();
+
+        this.setPlayersCursor(ItemStack.EMPTY);
     }
 
     private void patchDesyncs(int slot, ClickType clickType) {
@@ -209,7 +213,7 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
     }
 
     @Override
-    public @NotNull ItemStack quickMoveStack(@NotNull Player player, int i) {
+    public ItemStack quickMoveStack(@NotNull Player player, int i) {
         return ItemStack.EMPTY;
     }
 
@@ -298,18 +302,13 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
     }
 
     private ButtonClick getButtonClickType(ClickType type, int dragType) {
-        switch (type) {
-            case PICKUP:
-                return (dragType == 0) ? ButtonClick.LEFT_CLICK : ButtonClick.RIGHT_CLICK;
-            case CLONE:
-                return ButtonClick.MIDDLE_CLICK;
-            case QUICK_MOVE:
-                return (dragType == 0) ? ButtonClick.SHIFT_LEFT_CLICK : ButtonClick.SHIFT_RIGHT_CLICK;
-            case THROW:
-                return ButtonClick.THROW;
-            default:
-                return ButtonClick.OTHER;
-        }
+        return switch (type) {
+            case PICKUP -> (dragType == 0) ? ButtonClick.LEFT_CLICK : ButtonClick.RIGHT_CLICK;
+            case CLONE -> ButtonClick.MIDDLE_CLICK;
+            case QUICK_MOVE -> (dragType == 0) ? ButtonClick.SHIFT_LEFT_CLICK : ButtonClick.SHIFT_RIGHT_CLICK;
+            case THROW -> ButtonClick.THROW;
+            default -> ButtonClick.OTHER;
+        };
     }
 
     private void handleMovableButton(int slot, int dragType, ClickType clickType) {
@@ -360,7 +359,6 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
                 if (action.isCancelled()) {
                     setPlayersCursor(ItemStack.EMPTY);
                     updateSlotStack(targetTemplateSlot, clickedButton.getDisplay(), template instanceof InventoryTemplate);
-                    return;
                 } else {
                     cursorButton = clickedButton;
                     setButton(slot, null);
@@ -433,16 +431,27 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
     }
 
     private void updateAllContainerContents() {
+        this.refresh(this.player, this.getItems());
+
         /*
          * Detects changes in the player's inventory and updates them. This is to prevent desyncs if a player
          * gets items added to their inventory while in the user interface.
          */
         player.containerMenu.broadcastChanges();
-//        if (inventoryTemplate != null) {
-//            player.refreshContainer(player.containerMenu, inventoryTemplate.getFullDisplay(player));
-//        } else {
-//            player.refreshContainer(player.containerMenu, player.containerMenu.getItems());
-//        }
+        if (inventoryTemplate != null) {
+            this.refresh(this.player, inventoryTemplate.getFullDisplay(player));
+        } else {
+            this.refresh(this.player, player.containerMenu.getItems());
+        }
+    }
+
+    private void refresh(ServerPlayer player, NonNullList<ItemStack> contents) {
+        player.connection.send(new ClientboundContainerSetContentPacket(
+                player.containerMenu.containerId,
+                player.containerMenu.getStateId(),
+                contents,
+                player.getItemInHand(InteractionHand.MAIN_HAND)
+        ));
     }
 
     private void setPlayersCursor(ItemStack stack) {
@@ -453,40 +462,44 @@ public class ForgeGooeyContainer extends AbstractContainerMenu implements GooeyC
     private void setButton(int slot, Button button) {
         if (slot < 0) return;
 
-        //Check if it's player's inventory or UI slot
-        if (slot >= page.getTemplate().getSize()) {
-            if (inventoryTemplate != null) {
-                int targetedPlayerSlotIndex = slot - page.getTemplate().getSize();
-
-                inventoryTemplate.getSlot(targetedPlayerSlotIndex).setButton(button);
-            }
-        } else {
-            page.getTemplate().getSlot(slot).setButton(button);
-        }
+        ((TemplateSlot) this.getSlot(slot)).setButton(button);
     }
 
     @Override
-    public void removed(Player playerIn) {
+    public void removed(@NotNull Player player) {
         if (closing) return;
-
         closing = true;
-        page.onClose(new PageAction(player, page));
+
+        page.onClose(new PageAction(this.player, page));
         page.unsubscribe(this);
         this.slots.forEach((slot) -> ((TemplateSlot) slot).getDelegate().unsubscribe(this));
-        if (inventoryTemplate != null) {
-            for (int i = 0; i < inventoryTemplate.getSize(); i++) {
-                inventoryTemplate.getSlot(i).unsubscribe(this);
-            }
-        }
-        MinecraftForge.EVENT_BUS.unregister(this);
 
-        super.removed(playerIn);
+        super.removed(player);
         player.containerMenu.broadcastChanges();
+        this.refresh(this.player, this.player.containerMenu.getItems());
     }
 
     @Override
-    public boolean stillValid(Player p_75145_1_) {
+    public boolean stillValid(@NotNull Player player) {
         return true;
+    }
+
+    private Button getButton(int slot) {
+        if (slot < 0) return null;
+
+        //Check if it's player's inventory or UI slot
+        if (slot >= page.getTemplate().getSize()) {
+
+            int targetedPlayerSlotIndex = slot - page.getTemplate().getSize();
+
+            if (inventoryTemplate != null) {
+                return inventoryTemplate.getSlot(targetedPlayerSlotIndex).getButton().orElse(null);
+            } else {
+                return null;
+            }
+        } else {
+            return page.getTemplate().getSlot(slot).getButton().orElse(null);
+        }
     }
 
     public static class ForgeGooeyContainerFactory implements GooeyContainerFactory {

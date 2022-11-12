@@ -199,6 +199,8 @@ public class FabricGooeyContainer extends AbstractContainerMenu implements Gooey
         );
         player.connection.send(openWindow);
         updateAllContainerContents();
+
+        this.setPlayersCursor(ItemStack.EMPTY);
     }
 
     private void patchDesyncs(int slot, ClickType clickType) {
