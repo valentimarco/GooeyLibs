@@ -1,0 +1,55 @@
+versions:
+  kotlin: 1.7.10
+
+  # Fabric / Forge / Loom / Architectury
+  loom: 0.12.0-SNAPSHOT
+  fabric-loader: 0.14.9
+  fabric-api: 0.59.0+1.18.2
+  architectury-plugin: 3.4-SNAPSHOT
+  forge: 1.18.2-40.1.0
+  architectury: 6.2.43
+
+  # Misc
+  shadow: 7.1.2
+
+dependencies:
+  kotlin:
+    group: org.jetbrains.kotlin
+    name: kotlin-gradle-plugin
+    version: { ref: kotlin }
+  loom:
+    group: dev.architectury
+    name: architectury-loom
+    version: { ref: loom }
+  architecturyPlugin:
+    group: architectury-plugin
+    name: architectury-plugin.gradle.plugin
+    version: { ref: architectury-plugin }
+  architectury:
+    group: dev.architectury
+    name: architectury
+    version: { ref: architectury }
+  fabricLoader:
+    group: net.fabricmc
+    name: fabric-loader
+    version: { ref: fabric-loader }
+  fabricApi:
+    group: net.fabricmc.fabric-api
+    name: fabric-api
+    version: { ref: fabric-api }
+  architecturyFabric:
+    group: dev.architectury
+    name: architectury-fabric
+    version: { ref: architectury }
+  forge:
+    group: net.minecraftforge
+    name: forge
+    version: { ref: forge }
+  architecturyForge:
+    group: dev.architectury
+    name: architectury-forge
+    version: { ref: architectury }
+  shadow:
+    group: gradle.plugin.com.github.johnrengelman
+    name: shadow
+    version: { ref: shadow }
