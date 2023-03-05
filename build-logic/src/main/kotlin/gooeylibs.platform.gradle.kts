@@ -23,8 +23,11 @@ tasks {
     remapJar {
         dependsOn(shadowJar)
         inputFile.set(shadowJar.flatMap { it.archiveFile })
-        archiveBaseName.set("GooeyLibs-${project.name}")
-        archiveClassifier.set("")
-        archiveVersion.set("${project.version}")
+        archiveBaseName.set("GooeyLibs-${project.name.capitalize()}")
+
+        val minecraft = rootProject.property("minecraft")
+        val snapshot = rootProject.property("snapshot")?.equals("true") ?: false
+        val project = rootProject.property("modVersion")
+        archiveVersion.set("$project-$minecraft${if(snapshot) "-SNAPSHOT" else ""}")
     }
 }

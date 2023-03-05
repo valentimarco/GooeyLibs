@@ -11,10 +11,13 @@ architectury {
     fabric()
 }
 
+loom {
+    accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
+}
+
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric-loader")}")
-    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.64.0+1.19.2"))
-    modImplementation(fabricApi.module("fabric-command-api-v2", "0.64.0+1.19.2"))
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.75.1+1.18.2"))
 
     implementation(project(":api", configuration = "namedElements"))
     "developmentFabric"(project(":api", configuration = "namedElements"))
@@ -22,15 +25,6 @@ dependencies {
 }
 
 tasks {
-    remapJar {
-        archiveBaseName.set("GooeyLibs-Fabric")
-        archiveClassifier.set("")
-        archiveVersion.set("$fabric-${rootProject.version}")
-
-        dependsOn("shadowJar")
-        inputFile.set(named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar").flatMap { it.archiveFile })
-    }
-
     processResources {
         inputs.property("version", rootProject.version)
 
@@ -56,7 +50,11 @@ publishing {
             from(components["java"])
             groupId = "ca.landonjw.gooeylibs"
             artifactId = "fabric"
-            version = rootProject.version.toString()
+
+            val minecraft = rootProject.property("minecraft")
+            val snapshot = rootProject.property("snapshot")?.equals("true") ?: false
+            val project = rootProject.property("modVersion")
+            version = "$project-$minecraft${if(snapshot) "-SNAPSHOT" else ""}"
         }
     }
 }

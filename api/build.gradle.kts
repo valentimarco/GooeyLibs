@@ -7,6 +7,10 @@ architectury {
     common("forge", "fabric")
 }
 
+loom {
+    accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
+}
+
 repositories {
     mavenCentral()
 }

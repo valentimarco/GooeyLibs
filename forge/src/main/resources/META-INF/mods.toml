@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[36,)"
+loaderVersion="[40,)"
 license="All rights reserved"
 
 [[mods]]
@@ -14,13 +14,13 @@ Server-side library that allows for easy user interface development.
 [[dependencies.gooeylibs2]]
    modId="forge"
    mandatory=true
-   versionRange="[36,)"
+   versionRange="[40,)"
    ordering="NONE"
    side="SERVER"
 
 [[dependencies.gooeylibs2]]
    modId="minecraft"
    mandatory=true
-   versionRange="[1.19.2]"
+   versionRange="[1.18.2]"
    ordering="NONE"
    side="SERVER"

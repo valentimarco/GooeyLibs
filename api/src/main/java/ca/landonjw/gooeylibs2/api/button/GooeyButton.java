@@ -4,10 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -121,7 +119,7 @@ public class GooeyButton extends ButtonBase {
 
         protected ItemStack buildDisplay() {
             if (title != null) {
-                MutableComponent result = Component.literal("")
+                MutableComponent result = Component.empty()
                         .setStyle(Style.EMPTY.withItalic(false))
                         .append(this.title);
                 display.setHoverName(result);
@@ -130,7 +128,7 @@ public class GooeyButton extends ButtonBase {
             if (!lore.isEmpty()) {
                 ListTag nbtLore = new ListTag();
                 for (Component line : lore) {
-                    MutableComponent result = Component.literal("")
+                    MutableComponent result = Component.empty()
                             .setStyle(Style.EMPTY.withItalic(false))
                             .append(line);
                     nbtLore.add(StringTag.valueOf(Component.Serializer.toJson(result)));

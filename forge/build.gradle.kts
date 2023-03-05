@@ -4,7 +4,6 @@ plugins {
 
 val minecraft = rootProject.property("minecraft")
 val forge = rootProject.property("forge")
-version = "$minecraft-$forge-${rootProject.version}"
 
 architectury {
     platformSetupLoomIde()
@@ -18,7 +17,7 @@ loom {
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:${rootProject.property("minecraft")}-${rootProject.property("forge")}")
+    forge("net.minecraftforge:forge:$minecraft-$forge")
 
     implementation(project(":api", configuration = "namedElements"))
     "developmentForge"(project(":api", configuration = "namedElements"))
@@ -29,15 +28,6 @@ dependencies {
 }
 
 tasks {
-    remapJar {
-        archiveBaseName.set("GooeyLibs-Forge")
-        archiveClassifier.set("")
-        archiveVersion.set("$forge-${rootProject.version}")
-
-        dependsOn("shadowJar")
-        inputFile.set(named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar").flatMap { it.archiveFile })
-    }
-
     processResources {
         inputs.property("version", rootProject.version)
 
@@ -60,10 +50,16 @@ publishing {
 
     publications {
         create<MavenPublication>("forge") {
-            from(components["java"])
+            artifact(tasks.remapJar)
+            artifact(tasks.remapSourcesJar)
+
             groupId = "ca.landonjw.gooeylibs"
             artifactId = "forge"
-            version = rootProject.version.toString()
+
+            val minecraft = rootProject.property("minecraft")
+            val snapshot = rootProject.property("snapshot")?.equals("true") ?: false
+            val project = rootProject.property("modVersion")
+            version = "$project-$minecraft${if(snapshot) "-SNAPSHOT" else ""}"
         }
     }
 }
