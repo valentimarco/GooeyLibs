@@ -30,7 +30,7 @@ public class UIManager {
         // Delay the open to allow sponge's annoying mixins to process previous container and not have aneurysm
         Task.builder()
                 .execute(() -> {
-                    GooeyContainer container = GooeyContainer.of(player, page);
+                    GooeyContainer container = new GooeyContainer(player, page);
                     container.open();
                 })
                 .build();
