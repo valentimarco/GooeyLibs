@@ -20,15 +20,11 @@ public abstract class InventoryMixin {
 
     @Shadow public abstract int getFreeSlot();
 
-    @Inject(method = "add(Lnet/minecraft/world/item/ItemStack;)Z", at = @At("HEAD"))
-    public void sync(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
-        int target = this.getFreeSlot();
-        System.out.println(target);
-
+    @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("RETURN"))
+    public void sync(int target, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         try {
             if (player instanceof ServerPlayer) {
                 if (player.containerMenu instanceof GooeyContainer gooey) {
-                    gooey.getSlot(target).set(itemStack);
                     gooey.refresh();
                 }
             }
