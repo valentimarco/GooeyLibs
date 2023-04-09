@@ -475,8 +475,10 @@ public class GooeyContainer extends AbstractContainerMenu {
         page.unsubscribe(this);
         this.slots.forEach((slot) -> ((TemplateSlot) slot).getDelegate().unsubscribe(this));
 
+        this.player.inventoryMenu.broadcastChanges();
+        refresh(this.player, player.inventoryMenu, player.inventoryMenu.getItems());
+        setPlayersCursor(ItemStack.EMPTY);
         super.removed(player);
-        player.inventoryMenu.broadcastChanges();
     }
 
     @Override
