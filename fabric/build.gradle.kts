@@ -1,3 +1,6 @@
+import net.fabricmc.loom.configuration.ide.RunConfig
+import net.fabricmc.loom.configuration.ide.RunConfigSettings
+
 plugins {
     id("gooeylibs.platform")
 }
@@ -13,6 +16,11 @@ architectury {
 
 loom {
     accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
+
+    runs {
+        val server = maybeCreate("server")
+        server.vmArgs.add("-Dmixin.debug.export=true")
+    }
 }
 
 val generatedResources = file("src/generated/resources")

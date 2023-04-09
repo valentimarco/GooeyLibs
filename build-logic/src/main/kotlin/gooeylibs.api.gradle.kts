@@ -22,6 +22,10 @@ architectury {
 loom {
     silentMojangMappingsLicense()
     accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
+
+    mixin {
+        defaultRefmapName.set("mixins.gooeylibs.${project.name}.refmap.json")
+    }
 }
 
 dependencies {
