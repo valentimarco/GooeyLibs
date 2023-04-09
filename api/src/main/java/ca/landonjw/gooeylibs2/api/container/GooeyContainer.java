@@ -158,7 +158,7 @@ public class GooeyContainer extends AbstractContainerMenu {
 
     private boolean isSlotInPlayerInventory(int slot) {
         int templateSize = page.getTemplate().getSize();
-        return slot >= templateSize && slot - templateSize < player.containerMenu.slots.size();
+        return slot >= templateSize && slot - templateSize < player.inventoryMenu.slots.size();
     }
 
     private ItemStack getItemAtSlot(int slot) {
@@ -421,7 +421,7 @@ public class GooeyContainer extends AbstractContainerMenu {
 
     private boolean isSlotOccupied(int slot) {
         if (isSlotInPlayerInventory(slot) && inventoryTemplate == null) {
-            return player.containerMenu.slots.get(getTemplateIndex(slot) + 9).hasItem();
+            return player.inventoryMenu.slots.get(getTemplateIndex(slot) + 9).hasItem();
         } else {
             return getButton(slot) != null;
         }
@@ -432,24 +432,24 @@ public class GooeyContainer extends AbstractContainerMenu {
     }
 
     private void updateAllContainerContents() {
-        this.refresh(this.player, this.getItems());
+        this.refresh(this.player, this.player.containerMenu, this.getItems());
 
         /*
          * Detects changes in the player's inventory and updates them. This is to prevent desyncs if a player
          * gets items added to their inventory while in the user interface.
          */
-        player.containerMenu.broadcastChanges();
+        player.inventoryMenu.broadcastChanges();
         if (inventoryTemplate != null) {
-            this.refresh(this.player, inventoryTemplate.getFullDisplay(player));
+            this.refresh(this.player, this.player.inventoryMenu, inventoryTemplate.getFullDisplay(player));
         } else {
-            this.refresh(this.player, player.containerMenu.getItems());
+            this.refresh(this.player, this.player.inventoryMenu, player.inventoryMenu.getItems());
         }
     }
 
-    private void refresh(ServerPlayer player, NonNullList<ItemStack> contents) {
+    private void refresh(ServerPlayer player, AbstractContainerMenu menu, NonNullList<ItemStack> contents) {
         player.connection.send(new ClientboundContainerSetContentPacket(
-                player.containerMenu.containerId,
-                player.containerMenu.getStateId(),
+                menu.containerId,
+                menu.getStateId(),
                 contents,
                 player.getItemInHand(InteractionHand.MAIN_HAND)
         ));
@@ -476,8 +476,7 @@ public class GooeyContainer extends AbstractContainerMenu {
         this.slots.forEach((slot) -> ((TemplateSlot) slot).getDelegate().unsubscribe(this));
 
         super.removed(player);
-        player.containerMenu.broadcastChanges();
-        this.refresh(this.player, this.player.containerMenu.getItems());
+        player.inventoryMenu.broadcastChanges();
     }
 
     @Override

@@ -23,7 +23,7 @@ public abstract class InventoryMixin {
     @Inject(method = "add(ILnet/minecraft/world/item/ItemStack;)Z", at = @At("RETURN"))
     public void sync(int target, ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         try {
-            if (player instanceof ServerPlayer) {
+            if (player instanceof ServerPlayer serverPlayer) {
                 if (player.containerMenu instanceof GooeyContainer gooey) {
                     gooey.refresh();
                 }
