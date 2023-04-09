@@ -1,6 +1,6 @@
 plugins {
-    java
-    `java-library`
+    id("java")
+    id("java-library")
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("maven-publish")
