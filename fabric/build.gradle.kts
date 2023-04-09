@@ -15,9 +15,18 @@ loom {
     accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
 }
 
+val generatedResources = file("src/generated/resources")
+sourceSets {
+    main {
+        resources {
+            srcDir(generatedResources)
+        }
+    }
+}
+
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric-loader")}")
-    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.75.1+1.18.2"))
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.75.1+1.19.2"))
 
     implementation(project(":api", configuration = "namedElements"))
     "developmentFabric"(project(":api", configuration = "namedElements"))
@@ -25,13 +34,20 @@ dependencies {
 }
 
 tasks {
+    val copyAccessWidener by registering(Copy::class) {
+        from(loom.accessWidenerPath)
+        into(generatedResources)
+    }
+
     processResources {
+        dependsOn(copyAccessWidener)
         inputs.property("version", rootProject.version)
 
         filesMatching("fabric.mod.json") {
             expand("version" to rootProject.version)
         }
     }
+
 }
 
 publishing {

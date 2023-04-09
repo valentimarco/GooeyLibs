@@ -8,7 +8,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
+    accessWidenerPath.set(file(ACCESS_WIDENER))
 }
 
 repositories {
