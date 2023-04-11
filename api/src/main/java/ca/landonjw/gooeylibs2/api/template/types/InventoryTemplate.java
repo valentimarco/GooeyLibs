@@ -24,8 +24,12 @@ public final class InventoryTemplate extends ChestTemplate {
         Optional<Button> slot = this.getSlot(index).getButton();
         if (slot.isPresent() && slot.get() instanceof InventoryListenerButton) {
             return player.containerMenu.getItems().get(index + 9);
-        } else {
+        }
+        else if (slot.isPresent()) {
             return slot.get().getDisplay();
+        }
+        else {
+            return ItemStack.EMPTY;
         }
     }
 
