@@ -6,6 +6,7 @@ import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import ca.landonjw.gooeylibs2.api.page.GooeyPage;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
+import ca.landonjw.gooeylibs2.api.template.types.InventoryTemplate;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
@@ -44,9 +45,12 @@ public class GooeyLibs implements ModInitializer {
                                         .set(22, diamond)
                                         .build();
 
+                                InventoryTemplate invTemplate = InventoryTemplate.builder().build();
+
                                 GooeyPage page = GooeyPage.builder()
                                         .title(Component.literal("1.19.2 Test UI"))
                                         .template(template)
+                                        .inventory(invTemplate)
                                         .build();
                                 UIManager.openUIForcefully(source.getPlayerOrException(), page);
                                 return 1;

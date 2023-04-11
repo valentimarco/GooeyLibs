@@ -129,6 +129,7 @@ public class GooeyContainer extends AbstractContainerMenu {
         if(this.inventoryTemplate != null) {
             this.inventoryTemplate.getSlots().forEach(delegate -> delegate.unsubscribe(this));
         }
+        this.slots.clear();
     }
 
     private void updateSlotStack(int index, ItemStack stack, boolean playerInventory) {
