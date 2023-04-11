@@ -5,10 +5,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class FabricTask implements Task {
@@ -133,6 +130,7 @@ public class FabricTask implements Task {
         public void initialize() {
             if(!this.initialized) {
                 ServerTickEvents.END_SERVER_TICK.register(this);
+                initialized = true;
             }
         }
 
@@ -146,7 +144,7 @@ public class FabricTask implements Task {
 
         @Override
         public void onEndTick(MinecraftServer server) {
-            this.children.forEach(child -> child.onEndTick(server));
+            new ArrayList<>(this.children).forEach(child -> child.onEndTick(server));
         }
     }
 
