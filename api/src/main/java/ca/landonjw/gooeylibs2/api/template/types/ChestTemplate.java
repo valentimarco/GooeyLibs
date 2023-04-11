@@ -238,7 +238,9 @@ public class ChestTemplate extends Template {
 
     public ChestTemplate fill(@Nullable Button button) {
         for (int i = 0; i < getSize(); i++) {
-            this.getSlot(i).setButton(button);
+            if (getSlot(i).getButton().isEmpty()) {
+                this.getSlot(i).setButton(button);
+            }
         }
         return this;
     }
@@ -246,7 +248,9 @@ public class ChestTemplate extends Template {
     public ChestTemplate fillFromList(@Nonnull List<Button> buttons) {
         Iterator<Button> iterator = buttons.iterator();
         for (int i = 0; i < getSize(); i++) {
-            this.getSlot(i).setButton(iterator.hasNext() ? iterator.next() : null);
+            if (getSlot(i).getButton().isEmpty()) {
+                this.getSlot(i).setButton(iterator.hasNext() ? iterator.next() : null);
+            }
         }
         return this;
     }
