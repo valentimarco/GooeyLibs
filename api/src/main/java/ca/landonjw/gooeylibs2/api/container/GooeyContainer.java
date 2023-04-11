@@ -172,27 +172,8 @@ public class GooeyContainer extends AbstractContainerMenu {
         return slots.get(slot).getItem();
     }
 
-    private TemplateSlotDelegate getReference(int slot) {
-        if (slot < 0) return null;
-
-        //Check if it's player's inventory or UI slot
-        if (slot >= page.getTemplate().getSize()) {
-            int targetedPlayerSlotIndex = slot - page.getTemplate().getSize();
-
-            if (inventoryTemplate != null) {
-                return this.inventoryTemplate.getSlot(targetedPlayerSlotIndex);
-            }
-            else {
-                return null;
-            }
-        }
-        else {
-            return page.getTemplate().getSlot(slot);
-        }
-    }
-
     public void open() {
-        player.closeContainer();
+        player.doCloseContainer();
         player.containerMenu = this;
         player.containerCounter = player.containerMenu.containerId;
         openWindow();
