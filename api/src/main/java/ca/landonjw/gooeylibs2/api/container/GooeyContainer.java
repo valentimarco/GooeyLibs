@@ -106,7 +106,8 @@ public class GooeyContainer extends AbstractContainerMenu {
                 addSlot(new TemplateSlot(this.container, delegate, 0, 0));
                 this.container.setItem(slotIndex++, button.getDisplay());
             }
-        } else {
+        }
+        else {
             for (int i = 0; i < inventoryTemplate.getSize(); i++) {
                 final int index = i;
                 final int itemSlot = i + page.getTemplate().getSize();
@@ -126,7 +127,7 @@ public class GooeyContainer extends AbstractContainerMenu {
             ((TemplateSlot) slot).getDelegate().unsubscribe(this);
         });
 
-        if(this.inventoryTemplate != null) {
+        if (this.inventoryTemplate != null) {
             this.inventoryTemplate.getSlots().forEach(delegate -> delegate.unsubscribe(this));
         }
         this.slots.clear();
@@ -144,7 +145,8 @@ public class GooeyContainer extends AbstractContainerMenu {
     private int getTemplateIndex(int slotIndex) {
         if (isSlotInPlayerInventory(slotIndex)) {
             return slotIndex - page.getTemplate().getSize();
-        } else {
+        }
+        else {
             return slotIndex;
         }
     }
@@ -152,7 +154,8 @@ public class GooeyContainer extends AbstractContainerMenu {
     private Template getTemplateFromIndex(int slotIndex) {
         if (isSlotInPlayerInventory(slotIndex)) {
             return inventoryTemplate;
-        } else {
+        }
+        else {
             return page.getTemplate();
         }
     }
@@ -178,10 +181,12 @@ public class GooeyContainer extends AbstractContainerMenu {
 
             if (inventoryTemplate != null) {
                 return this.inventoryTemplate.getSlot(targetedPlayerSlotIndex);
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             return page.getTemplate().getSlot(slot);
         }
     }
@@ -209,7 +214,8 @@ public class GooeyContainer extends AbstractContainerMenu {
     private void patchDesyncs(int slot, ClickType clickType) {
         if (clickType == ClickType.PICKUP || clickType == ClickType.CLONE || clickType == ClickType.THROW) {
             updateSlotStack(getTemplateIndex(slot), getItemAtSlot(slot), isSlotInPlayerInventory(slot));
-        } else if (clickType == ClickType.QUICK_MOVE || clickType == ClickType.PICKUP_ALL) {
+        }
+        else if (clickType == ClickType.QUICK_MOVE || clickType == ClickType.PICKUP_ALL) {
             updateAllContainerContents();
         }
     }
@@ -223,6 +229,9 @@ public class GooeyContainer extends AbstractContainerMenu {
     public void clicked(int slot, int dragType, @NotNull ClickType type, @NotNull Player player) {
         // Don't do anything if user is only clicking edge of UI.
         if (slot == -1 || slot == -999) {
+            if (cursorButton != null) {
+                setPlayersCursor(cursorButton.getDisplay());
+            }
             return;
         }
 
@@ -249,7 +258,7 @@ public class GooeyContainer extends AbstractContainerMenu {
                 }
             }
             patchDesyncs(slot, type);
-            setPlayersCursor(ItemStack.EMPTY);
+            setPlayersCursor((cursorButton != null) ? cursorButton.getDisplay() : ItemStack.EMPTY);
             return;
         }
         this.lastClickTick = this.server.getTickCount();
@@ -326,7 +335,6 @@ public class GooeyContainer extends AbstractContainerMenu {
         }
 
         Template template = getTemplateFromIndex(slot);
-        int targetTemplateSlot = getTemplateIndex(slot);
 
         if (template == null) {
             if (clickType == ClickType.PICKUP && isSlotOccupied(slot)) {
@@ -334,89 +342,111 @@ public class GooeyContainer extends AbstractContainerMenu {
                 return;
             }
             if (clickType == ClickType.QUICK_CRAFT) {
-                updateSlotStack(getTemplateIndex(slot), getItemAtSlot(slot), true);
+                this.updateAllContainerContents();
             }
             if (cursorButton != null) {
                 setPlayersCursor(cursorButton.getDisplay());
             }
-        } else {
-            Button clickedButton = getButton(slot);
-
+        }
+        else {
             if (cursorButton == null) {
-                if (slot == -999) return;
+                onMovablePickup(slot, dragType, clickType);
+            }
+            else {
+                onMovableDrop(slot, dragType, clickType);
+            }
+        }
+    }
 
-                setPlayersCursor(getItemAtSlot(slot));
+    private void onMovablePickup(int slot, int dragType, ClickType clickType) {
+        Template template = getTemplateFromIndex(slot);
+        int targetTemplateSlot = getTemplateIndex(slot);
+        Button clickedButton = getButton(slot);
 
-                if (clickedButton == null) {
+        if (slot == -999) return;
+
+        setPlayersCursor(getItemAtSlot(slot));
+
+        if (clickedButton == null) {
+            return;
+        }
+        if (clickType == ClickType.QUICK_CRAFT && dragType == 9) {
+            setPlayersCursor(ItemStack.EMPTY);
+            return;
+        }
+
+        ButtonClick click = getButtonClickType(clickType, dragType);
+        MovableButtonAction action = new MovableButtonAction(player, click, clickedButton, template, page, targetTemplateSlot);
+        clickedButton.onClick(action);
+        ((Movable) clickedButton).onPickup(action);
+
+        if (action.isCancelled()) {
+            setPlayersCursor(ItemStack.EMPTY);
+            updateSlotStack(targetTemplateSlot, clickedButton.getDisplay(), template instanceof InventoryTemplate);
+        }
+        else {
+            cursorButton = clickedButton;
+            setButton(slot, null);
+
+            // Clone needs to return empty ItemStack or it desyncs.
+            if (clickType == ClickType.CLONE || clickType == ClickType.QUICK_MOVE || clickType == ClickType.THROW) {
+                setPlayersCursor(cursorButton.getDisplay());
+            }
+        }
+    }
+
+    private void onMovableDrop(int slot, int dragType, ClickType clickType) {
+        Template template = getTemplateFromIndex(slot);
+        int targetTemplateSlot = getTemplateIndex(slot);
+
+        // This prevents a desync on double clicking when dropping
+        if (clickType == ClickType.PICKUP_ALL || slot == -999) {
+            setPlayersCursor(cursorButton.getDisplay());
+            return;
+        }
+
+        // Handle collision
+        if (isSlotOccupied(slot)) {
+            setPlayersCursor(cursorButton.getDisplay());
+
+            /*
+             * When a quick move is performed, it will apply slot clicks to all identical items, causing
+             * collisions when trying to drop. Quick move wants a return type of an empty ItemStack,
+             * so this guarantees it, otherwise there will be a desync.
+             */
+            if (clickType == ClickType.QUICK_MOVE || clickType == ClickType.CLONE || clickType == ClickType.THROW) {
+                this.resetQuickCraft();
+            }
+            else if (clickType == ClickType.QUICK_CRAFT) {
+                updateSlotStack(getTemplateIndex(slot), getItemAtSlot(slot), isSlotInPlayerInventory(slot));
+            }
+        }
+        else {
+            ButtonClick click = getButtonClickType(clickType, dragType);
+            MovableButtonAction action = new MovableButtonAction(player, click, cursorButton, template, page, targetTemplateSlot);
+            cursorButton.onClick(action);
+            ((Movable) cursorButton).onDrop(action);
+
+            if (action.isCancelled()) {
+                // Clone needs to return empty ItemStack or it desyncs.
+                if (clickType == ClickType.CLONE) {
                     return;
                 }
-                if (clickType == ClickType.QUICK_CRAFT && dragType == 9) {
-                    setPlayersCursor(ItemStack.EMPTY);
-                    return;
+
+                setPlayersCursor(cursorButton.getDisplay());
+                updateSlotStack(targetTemplateSlot, ItemStack.EMPTY, template instanceof InventoryTemplate);
+                if (clickType == ClickType.QUICK_CRAFT) {
+                    this.updateAllContainerContents();
                 }
+            }
+            else {
+                setButton(slot, cursorButton);
+                cursorButton = null;
+                setPlayersCursor(ItemStack.EMPTY);
 
-                ButtonClick click = getButtonClickType(clickType, dragType);
-                MovableButtonAction action = new MovableButtonAction(player, click, clickedButton, template, page, targetTemplateSlot);
-                clickedButton.onClick(action);
-                ((Movable) clickedButton).onPickup(action);
-
-                if (action.isCancelled()) {
-                    setPlayersCursor(ItemStack.EMPTY);
-                    updateSlotStack(targetTemplateSlot, clickedButton.getDisplay(), template instanceof InventoryTemplate);
-                } else {
-                    cursorButton = clickedButton;
-                    setButton(slot, null);
-
-                    // Clone needs to return empty ItemStack or it desyncs.
-                    if (clickType == ClickType.CLONE || clickType == ClickType.QUICK_MOVE || clickType == ClickType.THROW) {
-                        setPlayersCursor(cursorButton.getDisplay());
-                    }
-                }
-            } else {
-                // This prevents a desync on double clicking when dropping
-                if (clickType == ClickType.PICKUP_ALL || slot == -999) {
-                    setPlayersCursor(cursorButton.getDisplay());
-                    return;
-                }
-
-                // Handle collision
-                if (isSlotOccupied(slot)) {
-                    setPlayersCursor(cursorButton.getDisplay());
-
-//                    /*
-//                     * When a quick move is performed, it will apply slot clicks to all identical items, causing
-//                     * collisions when trying to drop. Quick move wants a return type of an empty ItemStack,
-//                     * so this guarantees it, otherwise there will be a desync.
-//                     */
-//                    if (clickType == ClickType.QUICK_MOVE || clickType == ClickType.CLONE || clickType == ClickType.THROW) {
-//                        this.resetQuickCraft();
-//                    } else if (clickType == ClickType.QUICK_CRAFT) {
-//                        updateSlotStack(getTemplateIndex(slot), getItemAtSlot(slot), isSlotInPlayerInventory(slot));
-//                        return;
-//                    } else if (clickType == ClickType.PICKUP) {
-//                        return;
-//                    } else {
-//                        return;
-//                    }
-                } else {
-                    ButtonClick click = getButtonClickType(clickType, dragType);
-                    MovableButtonAction action = new MovableButtonAction(player, click, cursorButton, template, page, targetTemplateSlot);
-                    cursorButton.onClick(action);
-                    ((Movable) cursorButton).onDrop(action);
-
-                    if (action.isCancelled()) {
-                        // Clone needs to return empty ItemStack or it desyncs.
-                        if (clickType == ClickType.CLONE) {
-                            return;
-                        }
-
-                        setPlayersCursor(cursorButton.getDisplay());
-                        updateSlotStack(targetTemplateSlot, ItemStack.EMPTY, template instanceof InventoryTemplate);
-                    } else {
-                        setButton(slot, cursorButton);
-                        cursorButton = null;
-                        setPlayersCursor(ItemStack.EMPTY);
-                    }
+                if (clickType == ClickType.QUICK_CRAFT) {
+                    this.updateAllContainerContents();
+                    this.setPlayersCursor(ItemStack.EMPTY);
                 }
             }
         }
@@ -425,7 +455,8 @@ public class GooeyContainer extends AbstractContainerMenu {
     private boolean isSlotOccupied(int slot) {
         if (isSlotInPlayerInventory(slot) && inventoryTemplate == null) {
             return player.inventoryMenu.slots.get(getTemplateIndex(slot) + 9).hasItem();
-        } else {
+        }
+        else {
             return getButton(slot) != null;
         }
     }
@@ -438,13 +469,14 @@ public class GooeyContainer extends AbstractContainerMenu {
         this.refresh(this.player, this.player.containerMenu, this.getItems());
 
         /*
-         * Detects changes in the player's inventory and updates them. This is to prevent desyncs if a player
+         * Detects change in the player's inventory and updates them. This is to prevent desyncs if a player
          * gets items added to their inventory while in the user interface.
          */
         player.inventoryMenu.broadcastChanges();
         if (inventoryTemplate != null) {
             this.refresh(this.player, this.player.inventoryMenu, inventoryTemplate.getFullDisplay(player));
-        } else {
+        }
+        else {
             this.refresh(this.player, this.player.inventoryMenu, player.inventoryMenu.getItems());
         }
     }
@@ -499,10 +531,12 @@ public class GooeyContainer extends AbstractContainerMenu {
 
             if (inventoryTemplate != null) {
                 return inventoryTemplate.getSlot(targetedPlayerSlotIndex).getButton().orElse(null);
-            } else {
+            }
+            else {
                 return null;
             }
-        } else {
+        }
+        else {
             return page.getTemplate().getSlot(slot).getButton().orElse(null);
         }
     }
