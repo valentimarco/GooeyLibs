@@ -226,6 +226,8 @@ public class GooeyContainer extends AbstractContainerMenu {
             return;
         }
 
+        System.out.println("dragType: " + dragType + " clickType: " + type);
+
         /*
          * These click types represent the user quickly picking up or moving items.
          * The click type proliferates and invokes slotClick for each stack that would be affected.
@@ -236,6 +238,7 @@ public class GooeyContainer extends AbstractContainerMenu {
         Slot target = this.slots.get(slot);
         if (this.lastClickTick == this.server.getTickCount()) {
             if (type == ClickType.PICKUP) {
+                System.out.println("Same Tick");
                 if (this.cursorButton != null) {
                     ItemStack clickedItem = getItemAtSlot(slot);
                     ItemStack cursorItem = this.cursorButton.getDisplay();
@@ -248,6 +251,8 @@ public class GooeyContainer extends AbstractContainerMenu {
                     return;
                 }
             }
+            patchDesyncs(slot, type);
+            setPlayersCursor(ItemStack.EMPTY);
             return;
         }
         this.lastClickTick = this.server.getTickCount();
