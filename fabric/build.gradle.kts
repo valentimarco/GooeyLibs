@@ -75,11 +75,7 @@ publishing {
             from(components["java"])
             groupId = "ca.landonjw.gooeylibs"
             artifactId = "fabric"
-
-            val minecraft = rootProject.property("minecraft")
-            val snapshot = rootProject.property("snapshot")?.equals("true") ?: false
-            val project = rootProject.property("modVersion")
-            version = "$project-$minecraft${if(snapshot) "-SNAPSHOT" else ""}"
+            version = rootProject.version.toString()
         }
     }
 }
