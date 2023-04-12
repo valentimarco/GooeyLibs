@@ -11,6 +11,7 @@ architectury {
 }
 
 loom {
+    accessWidenerPath.set(project(":api").file(ACCESS_WIDENER))
     forge {
         convertAccessWideners.set(true)
     }
@@ -55,11 +56,7 @@ publishing {
 
             groupId = "ca.landonjw.gooeylibs"
             artifactId = "forge"
-
-            val minecraft = rootProject.property("minecraft")
-            val snapshot = rootProject.property("snapshot")?.equals("true") ?: false
-            val project = rootProject.property("modVersion")
-            version = "$project-$minecraft${if(snapshot) "-SNAPSHOT" else ""}"
+            version = rootProject.version.toString()
         }
     }
 }
