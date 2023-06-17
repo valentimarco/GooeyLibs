@@ -34,8 +34,8 @@ sourceSets {
 
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric-loader")}")
-    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.75.1+1.19.2"))
-    modImplementation(fabricApi.module("fabric-command-api-v2", "0.75.1+1.19.2"))
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.79.0+1.19.4"))
+    modImplementation(fabricApi.module("fabric-command-api-v2", "0.79.0+1.19.4"))
 
     implementation(project(":api", configuration = "namedElements"))
     "developmentFabric"(project(":api", configuration = "namedElements"))
