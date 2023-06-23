@@ -14,13 +14,13 @@ Server-side library that allows for easy user interface development.
 [[dependencies.gooeylibs2]]
    modId="forge"
    mandatory=true
-   versionRange="[45,)"
+   versionRange="[47,)"
    ordering="NONE"
    side="SERVER"
 
 [[dependencies.gooeylibs2]]
    modId="minecraft"
    mandatory=true
-   versionRange="[1.19.4]"
+   versionRange="[1.20.1]"
    ordering="NONE"
    side="SERVER"

@@ -1,6 +1,3 @@
-import net.fabricmc.loom.configuration.ide.RunConfig
-import net.fabricmc.loom.configuration.ide.RunConfigSettings
-
 plugins {
     id("gooeylibs.platform")
 }
@@ -34,8 +31,10 @@ sourceSets {
 
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric-loader")}")
-    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.79.0+1.19.4"))
-    modImplementation(fabricApi.module("fabric-command-api-v2", "0.79.0+1.19.4"))
+
+    var fabric = "${rootProject.property("fabric-api")}+${rootProject.property("minecraft")}"
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", fabric))
+    modImplementation(fabricApi.module("fabric-command-api-v2", fabric))
 
     implementation(project(":api", configuration = "namedElements"))
     "developmentFabric"(project(":api", configuration = "namedElements"))

@@ -52,7 +52,7 @@ public class GooeyContainer extends AbstractContainerMenu {
 
     public GooeyContainer(@Nonnull ServerPlayer player, @Nonnull Page page) {
         super(page.getTemplate().getTemplateType().getContainerType(page.getTemplate()), 1);
-        this.server = player.level.getServer();
+        this.server = player.level().getServer();
         this.player = player;
 
         this.page = page;
@@ -230,7 +230,7 @@ public class GooeyContainer extends AbstractContainerMenu {
                     ItemStack clickedItem = getItemAtSlot(slot);
                     ItemStack cursorItem = this.cursorButton.getDisplay();
 
-                    if (clickedItem.getItem() == cursorItem.getItem() && ItemStack.isSame(clickedItem, cursorItem)) {
+                    if (clickedItem.getItem() == cursorItem.getItem() && ItemStack.isSameItem(clickedItem, cursorItem)) {
                         ItemStack copy = getItemAtSlot(slot).copy();
                         copy.setCount(copy.getCount() + this.cursorButton.getDisplay().getCount());
                         target.onTake(this.player, copy);
