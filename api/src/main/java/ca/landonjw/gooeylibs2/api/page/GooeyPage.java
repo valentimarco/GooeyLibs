@@ -1,18 +1,37 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.page;
 
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.InventoryTemplate;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 public class GooeyPage extends PageBase {
 
     private final Consumer<PageAction> onOpen, onClose;
 
-    public GooeyPage(@Nonnull Template template,
+    public GooeyPage(@NotNull Template template,
                      @Nullable InventoryTemplate inventoryTemplate,
                      @Nullable Component title,
                      @Nullable Consumer<PageAction> onOpen,
@@ -23,12 +42,12 @@ public class GooeyPage extends PageBase {
     }
 
     @Override
-    public void onOpen(@Nonnull PageAction action) {
+    public void onOpen(@NotNull PageAction action) {
         if (onOpen != null) onOpen.accept(action);
     }
 
     @Override
-    public void onClose(@Nonnull PageAction action) {
+    public void onClose(@NotNull PageAction action) {
         if (onClose != null) onClose.accept(action);
     }
 
@@ -56,7 +75,7 @@ public class GooeyPage extends PageBase {
             return this;
         }
 
-        public Builder template(@Nonnull Template template) {
+        public Builder template(@NotNull Template template) {
             if (template instanceof InventoryTemplate) {
                 throw new IllegalArgumentException("you can not use an inventory template here!");
             }

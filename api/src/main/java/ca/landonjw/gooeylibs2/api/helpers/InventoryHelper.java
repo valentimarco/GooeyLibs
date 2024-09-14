@@ -1,12 +1,30 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.helpers;
 
 import ca.landonjw.gooeylibs2.api.container.GooeyContainer;
 import ca.landonjw.gooeylibs2.api.tasks.Task;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Utility functions that are used to conveniently modify player's inventories when using GooeyLibs pages.
@@ -24,7 +42,7 @@ public class InventoryHelper {
      *                      to get this, you should typically use ButtonAction#getInventorySlot.
      * @param stack         the itemstack to set in the player's inventory.
      */
-    public static void setToInventorySlot(@Nonnull ServerPlayer player, int inventorySlot, @Nullable ItemStack stack) {
+    public static void setToInventorySlot(@NotNull ServerPlayer player, int inventorySlot, @Nullable ItemStack stack) {
         if (inventorySlot < 0) return;
 
         // Empty slots are always populated with ItemStack.EMPTY instead of null.
@@ -56,7 +74,7 @@ public class InventoryHelper {
      * @param inventoryCol the column to set stack in, starting at 0
      * @param stack        the itemstack to set in the player's inventory.
      */
-    public static void setToInventorySlot(@Nonnull ServerPlayer player, int inventoryRow, int inventoryCol, @Nullable ItemStack stack) {
+    public static void setToInventorySlot(@NotNull ServerPlayer player, int inventoryRow, int inventoryCol, @Nullable ItemStack stack) {
         setToInventorySlot(player, inventoryRow * 9 + inventoryCol, stack);
     }
 
@@ -67,7 +85,7 @@ public class InventoryHelper {
      * @param player the player to add inventory stack to
      * @param stack  the itemstack to add to player's inventory
      */
-    public static void addToInventorySlot(@Nonnull ServerPlayer player, @Nonnull ItemStack stack) {
+    public static void addToInventorySlot(@NotNull ServerPlayer player, @NotNull ItemStack stack) {
         if (stack == ItemStack.EMPTY) return;
 
         player.getInventory().add(stack.copy());
@@ -86,8 +104,8 @@ public class InventoryHelper {
      * @param inventorySlot the inventory template slot to get itemstack from
      * @return an itemstack at the given inventory template slot location, or ItemStack.EMPTY if no item in slot
      */
-    @Nonnull
-    public static ItemStack getStackAtSlot(@Nonnull ServerPlayer player, int inventorySlot) {
+    @NotNull
+    public static ItemStack getStackAtSlot(@NotNull ServerPlayer player, int inventorySlot) {
         /*
          * Offset hotbar and main inventory since their implementation differs from concept of template slots.
          * Hotbar in inventory is always placed before main inventory slots in player inventory, where

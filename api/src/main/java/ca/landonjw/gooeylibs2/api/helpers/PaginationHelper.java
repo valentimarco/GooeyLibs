@@ -1,3 +1,22 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.helpers;
 
 import ca.landonjw.gooeylibs2.api.button.Button;
@@ -5,9 +24,9 @@ import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
 import ca.landonjw.gooeylibs2.api.page.PageAction;
 import ca.landonjw.gooeylibs2.api.template.Template;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +42,7 @@ public class PaginationHelper {
      *
      * @param pages list of pages in order to link
      */
-    public static void linkPagesTogether(@Nonnull List<LinkedPage> pages) {
+    public static void linkPagesTogether(@NotNull List<LinkedPage> pages) {
         for (int i = 0; i < pages.size(); i++) {
             if (i != 0) {
                 pages.get(i).setPrevious(pages.get(i - 1));
@@ -58,8 +77,8 @@ public class PaginationHelper {
      *                    for example specifying {@link LinkedPage#onClose(PageAction)}
      * @return the first page generated, with all pages linked together.
      */
-    public static LinkedPage createPagesFromPlaceholders(@Nonnull Template template,
-                                                         @Nonnull List<Button> toReplace,
+    public static LinkedPage createPagesFromPlaceholders(@NotNull Template template,
+                                                         @NotNull List<Button> toReplace,
                                                          @Nullable LinkedPage.Builder pageBuilder) {
         // Get all the indexes of placeholder buttons.
         List<Integer> placeholderIndexes = new ArrayList<>();

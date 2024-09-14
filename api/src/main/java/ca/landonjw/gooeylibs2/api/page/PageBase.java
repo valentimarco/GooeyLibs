@@ -1,12 +1,31 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.page;
 
 import ca.landonjw.gooeylibs2.api.data.EventEmitter;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.types.InventoryTemplate;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -17,7 +36,7 @@ public abstract class PageBase implements Page {
     private InventoryTemplate inventoryTemplate;
     private Component title;
 
-    public PageBase(@Nonnull Template template,
+    public PageBase(@NotNull Template template,
                     @Nullable InventoryTemplate inventoryTemplate,
                     @Nullable Component title) {
         this.template = template;
@@ -30,7 +49,7 @@ public abstract class PageBase implements Page {
         return template;
     }
 
-    public void setTemplate(@Nonnull Template template) {
+    public void setTemplate(@NotNull Template template) {
         this.template = template;
         update();
     }
@@ -57,11 +76,11 @@ public abstract class PageBase implements Page {
         update();
     }
 
-    public void subscribe(@Nonnull Object observer, @Nonnull Consumer<Page> consumer) {
+    public void subscribe(@NotNull Object observer, @NotNull Consumer<Page> consumer) {
         this.eventEmitter.subscribe(observer, consumer);
     }
 
-    public void unsubscribe(@Nonnull Object observer) {
+    public void unsubscribe(@NotNull Object observer) {
         this.eventEmitter.unsubscribe(observer);
     }
 

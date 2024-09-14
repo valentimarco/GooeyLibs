@@ -7,10 +7,11 @@ pluginManagement {
         maven("https://maven.minecraftforge.net/")
     }
 
-    includeBuild("build-logic")
+    includeBuild("gradle/build-logic")
 }
 
 rootProject.name = "GooeyLibs"
-include("forge")
-include("fabric")
+
 include("api")
+//include("forge")
+//include("fabric")

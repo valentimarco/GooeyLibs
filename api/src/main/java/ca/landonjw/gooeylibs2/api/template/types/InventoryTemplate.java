@@ -1,3 +1,22 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.template.types;
 
 import ca.landonjw.gooeylibs2.api.button.Button;
@@ -8,19 +27,19 @@ import ca.landonjw.gooeylibs2.api.template.slot.TemplateSlotDelegate;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
 public final class InventoryTemplate extends ChestTemplate {
 
-    protected InventoryTemplate(@Nonnull TemplateSlotDelegate[] slots) {
+    protected InventoryTemplate(@NotNull TemplateSlotDelegate[] slots) {
         super(slots);
     }
 
-    public ItemStack getDisplayForSlot(@Nonnull ServerPlayer player, int index) {
+    public ItemStack getDisplayForSlot(@NotNull ServerPlayer player, int index) {
         Optional<Button> slot = this.getSlot(index).getButton();
         if (slot.isPresent() && slot.get() instanceof InventoryListenerButton) {
             return player.containerMenu.getItems().get(index + 9);
@@ -47,7 +66,7 @@ public final class InventoryTemplate extends ChestTemplate {
     }
 
     @Deprecated
-    public NonNullList<ItemStack> getFullDisplay(@Nonnull ServerPlayer player) {
+    public NonNullList<ItemStack> getFullDisplay(@NotNull ServerPlayer player) {
         NonNullList<ItemStack> displays = NonNullList.create();
 
         int PLAYER_INVENTORY_OFFSET = 8;
@@ -100,7 +119,7 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder rowFromList(int row, @Nonnull List<Button> buttons) {
+        public Builder rowFromList(int row, @NotNull List<Button> buttons) {
             templateInstance.rowFromList(row, buttons);
             return this;
         }
@@ -110,17 +129,17 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder columnFromList(int col, @Nonnull List<Button> buttons) {
+        public Builder columnFromList(int col, @NotNull List<Button> buttons) {
             templateInstance.columnFromList(col, buttons);
             return this;
         }
 
-        public Builder line(@Nonnull LineType lineType, int startRow, int startCol, int length, @Nullable Button button) {
+        public Builder line(@NotNull LineType lineType, int startRow, int startCol, int length, @Nullable Button button) {
             templateInstance.line(lineType, startRow, startCol, length, button);
             return this;
         }
 
-        public Builder lineFromList(@Nonnull LineType lineType, int startRow, int startCol, int length, @Nonnull List<Button> buttons) {
+        public Builder lineFromList(@NotNull LineType lineType, int startRow, int startCol, int length, @NotNull List<Button> buttons) {
             templateInstance.lineFromList(lineType, startRow, startCol, length, buttons);
             return this;
         }
@@ -130,7 +149,7 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder squareFromList(int startRow, int startCol, int size, @Nonnull List<Button> buttons) {
+        public Builder squareFromList(int startRow, int startCol, int size, @NotNull List<Button> buttons) {
             templateInstance.squareFromList(startRow, startCol, size, buttons);
             return this;
         }
@@ -140,7 +159,7 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder rectangleFromList(int startRow, int startCol, int length, int width, @Nonnull List<Button> buttons) {
+        public Builder rectangleFromList(int startRow, int startCol, int length, int width, @NotNull List<Button> buttons) {
             templateInstance.rectangleFromList(startRow, startCol, length, width, buttons);
             return this;
         }
@@ -150,7 +169,7 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder borderFromList(int startRow, int startCol, int length, int width, @Nonnull List<Button> buttons) {
+        public Builder borderFromList(int startRow, int startCol, int length, int width, @NotNull List<Button> buttons) {
             templateInstance.borderFromList(startRow, startCol, length, width, buttons);
             return this;
         }
@@ -160,7 +179,7 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder checkerFromList(int startRow, int startCol, int length, int width, @Nonnull List<Button> buttons, @Nonnull List<Button> buttons2) {
+        public Builder checkerFromList(int startRow, int startCol, int length, int width, @NotNull List<Button> buttons, @NotNull List<Button> buttons2) {
             templateInstance.checkerFromList(startRow, startCol, length, width, buttons, buttons2);
             return this;
         }
@@ -170,7 +189,7 @@ public final class InventoryTemplate extends ChestTemplate {
             return this;
         }
 
-        public Builder fillFromList(@Nonnull List<Button> buttons) {
+        public Builder fillFromList(@NotNull List<Button> buttons) {
             templateInstance.fillFromList(buttons);
             return this;
         }

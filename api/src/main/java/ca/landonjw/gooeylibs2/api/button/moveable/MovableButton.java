@@ -1,12 +1,31 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.button.moveable;
 
 import ca.landonjw.gooeylibs2.api.button.ButtonAction;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -15,7 +34,7 @@ public class MovableButton extends GooeyButton implements Movable {
     private Consumer<MovableButtonAction> onPickup;
     private Consumer<MovableButtonAction> onDrop;
 
-    protected MovableButton(@Nonnull ItemStack display,
+    protected MovableButton(@NotNull ItemStack display,
                             @Nullable Consumer<ButtonAction> onClick,
                             @Nullable Consumer<MovableButtonAction> onPickup,
                             @Nullable Consumer<MovableButtonAction> onDrop) {
@@ -45,23 +64,8 @@ public class MovableButton extends GooeyButton implements Movable {
         protected Consumer<MovableButtonAction> onPickup;
         protected Consumer<MovableButtonAction> onDrop;
 
-        public Builder display(@Nonnull ItemStack display) {
+        public Builder display(@NotNull ItemStack display) {
             super.display(display);
-            return this;
-        }
-
-        public Builder title(@Nullable Component title) {
-            super.title(title);
-            return this;
-        }
-
-        public Builder lore(@Nullable Collection<String> lore) {
-            super.lore(lore);
-            return this;
-        }
-
-        public <T> Builder lore(Class<T> type, @Nullable Collection<T> lore) {
-            super.lore(type, lore);
             return this;
         }
 
@@ -101,7 +105,7 @@ public class MovableButton extends GooeyButton implements Movable {
 
         public MovableButton build() {
             validate();
-            return new MovableButton(buildDisplay(), onClick, onPickup, onDrop);
+            return new MovableButton(this.display, onClick, onPickup, onDrop);
         }
 
     }

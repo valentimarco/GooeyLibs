@@ -1,6 +1,26 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.button;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedList;
@@ -16,7 +36,7 @@ public class RateLimitedButton extends ButtonBase {
 
     private final LinkedList<Instant> lastActionTimes = new LinkedList<>();
 
-    protected RateLimitedButton(@Nonnull Button button, int limit, long timeInterval, @Nonnull TimeUnit timeUnit) {
+    protected RateLimitedButton(@NotNull Button button, int limit, long timeInterval, @NotNull TimeUnit timeUnit) {
         super(button.getDisplay());
         this.button = button;
         this.limit = limit;
@@ -25,7 +45,7 @@ public class RateLimitedButton extends ButtonBase {
     }
 
     @Override
-    public void onClick(@Nonnull ButtonAction action) {
+    public void onClick(@NotNull ButtonAction action) {
         if (isRateLimited()) return;
 
         if (isTopElementAboveTimeThreshold()) lastActionTimes.remove();
@@ -75,7 +95,7 @@ public class RateLimitedButton extends ButtonBase {
             return this;
         }
 
-        public Builder interval(long time, @Nonnull TimeUnit timeUnit) {
+        public Builder interval(long time, @NotNull TimeUnit timeUnit) {
             this.timeInterval = time;
             this.timeUnit = timeUnit;
             return this;

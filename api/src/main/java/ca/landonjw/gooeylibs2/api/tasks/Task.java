@@ -1,24 +1,43 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.tasks;
 
-import ca.landonjw.gooeylibs2.bootstrap.GooeyBootstrapper;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public interface Task {
+public sealed interface Task permits GooeyTask {
 
+    /**
+     *
+     *
+     * @return
+     */
     boolean isExpired();
 
     void setExpired();
 
-    static TaskBuilder builder() {
-        return GooeyBootstrapper.instance().builders().provide(TaskBuilder.class);
-    }
+    sealed interface TaskBuilder permits GooeyTask.GooeyTaskBuilder {
+        TaskBuilder execute(@NotNull Runnable runnable);
 
-    interface TaskBuilder {
-        TaskBuilder execute(@Nonnull Runnable runnable);
-
-        TaskBuilder execute(@Nonnull Consumer<Task> consumer);
+        TaskBuilder execute(@NotNull Consumer<Task> consumer);
 
         TaskBuilder delay(long delay);
 

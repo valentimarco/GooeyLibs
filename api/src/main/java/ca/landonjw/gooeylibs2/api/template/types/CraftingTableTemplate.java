@@ -1,3 +1,22 @@
+/*
+ * GooeyLibs
+ * Copyright (C) 201x - 2024 landonjw
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package ca.landonjw.gooeylibs2.api.template.types;
 
 import ca.landonjw.gooeylibs2.api.button.Button;
@@ -5,15 +24,15 @@ import ca.landonjw.gooeylibs2.api.helpers.TemplateHelper;
 import ca.landonjw.gooeylibs2.api.template.Template;
 import ca.landonjw.gooeylibs2.api.template.TemplateType;
 import ca.landonjw.gooeylibs2.api.template.slot.TemplateSlotDelegate;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 
 public class CraftingTableTemplate extends Template {
 
-    protected CraftingTableTemplate(@Nonnull TemplateSlotDelegate[] slots) {
+    protected CraftingTableTemplate(@NotNull TemplateSlotDelegate[] slots) {
         super(TemplateType.CRAFTING_TABLE, slots);
     }
 
@@ -45,7 +64,7 @@ public class CraftingTableTemplate extends Template {
         return this;
     }
 
-    public CraftingTableTemplate fillFromList(@Nonnull List<Button> buttons) {
+    public CraftingTableTemplate fillFromList(@NotNull List<Button> buttons) {
         Iterator<Button> iterator = buttons.iterator();
         for (int i = 0; i < getSize(); i++) {
             if (!getSlot(i).getButton().isPresent()) {
@@ -64,7 +83,7 @@ public class CraftingTableTemplate extends Template {
         return this;
     }
 
-    public CraftingTableTemplate fillGridFromList(@Nonnull List<Button> buttons) {
+    public CraftingTableTemplate fillGridFromList(@NotNull List<Button> buttons) {
         Iterator<Button> iterator = buttons.iterator();
         for (int i = 1; i < 10; i++) {
             if (!getSlot(i).getButton().isPresent()) {
@@ -134,7 +153,7 @@ public class CraftingTableTemplate extends Template {
             return this;
         }
 
-        public Builder fillFromList(@Nonnull List<Button> buttons) {
+        public Builder fillFromList(@NotNull List<Button> buttons) {
             templateInstance.fillFromList(buttons);
             return this;
         }
@@ -144,7 +163,7 @@ public class CraftingTableTemplate extends Template {
             return this;
         }
 
-        public Builder fillGridFromList(@Nonnull List<Button> buttons) {
+        public Builder fillGridFromList(@NotNull List<Button> buttons) {
             templateInstance.fillGridFromList(buttons);
             return this;
         }

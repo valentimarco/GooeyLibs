@@ -1,6 +1,5 @@
 plugins {
     base
-    id("gooeylibs.root")
 }
 
 group = project.group
