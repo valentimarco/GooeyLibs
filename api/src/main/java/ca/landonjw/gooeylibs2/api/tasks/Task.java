@@ -23,31 +23,108 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
-public sealed interface Task permits GooeyTask {
+public final class Task {
 
-    /**
-     *
-     *
-     * @return
-     */
-    boolean isExpired();
+    private final Consumer<Task> consumer;
+    private final long interval;
+    private final long iterations;
 
-    void setExpired();
+    private long currentIteration;
+    private long ticksRemaining;
+    private boolean isExpired;
 
-    sealed interface TaskBuilder permits GooeyTask.GooeyTaskBuilder {
-        TaskBuilder execute(@NotNull Runnable runnable);
+    public Task(Consumer<Task> consumer, long delay, long interval, long iterations) {
+        this.consumer = consumer;
+        this.interval = interval;
+        this.iterations = iterations;
 
-        TaskBuilder execute(@NotNull Consumer<Task> consumer);
+        if (delay > 0) {
+            ticksRemaining = delay;
+        }
+        TaskManager.getInstance().register(this);
+    }
 
-        TaskBuilder delay(long delay);
+    void tick() {
+        if (isExpired) return;
 
-        TaskBuilder interval(long interval);
+        this.ticksRemaining--;
+        if (ticksRemaining > 0) return;
 
-        TaskBuilder iterations(long iterations);
+        consumer.accept(this);
+        currentIteration++;
 
-        TaskBuilder infinite();
+        if (interval > 0 && (currentIteration < iterations || iterations == -1 )) {
+            this.ticksRemaining = interval;
+        }
+        else {
+            this.isExpired = true;
+        }
+    }
 
-        Task build();
+    public boolean isExpired() {
+       return this.isExpired;
+    }
+
+    public void setExpired() {
+        this.isExpired = true;
+    }
+
+    public static Task.Builder builder() {
+        return new Task.Builder();
+    }
+
+    public final static class Builder {
+
+        private Consumer<Task> consumer;
+        private long delay;
+        private long interval;
+        private long iterations = 1;
+
+        public Builder execute(@NotNull Runnable runnable) {
+            this.consumer = (task) -> runnable.run();
+            return this;
+        }
+
+        public Builder execute(@NotNull Consumer<Task> consumer) {
+            this.consumer = consumer;
+            return this;
+        }
+
+        public Builder delay(long delay) {
+            if (delay < 0) {
+                throw new IllegalArgumentException("delay must not be below 0");
+            }
+            this.delay = delay;
+            return this;
+        }
+
+        public Builder interval(long interval) {
+            if (interval < 0) {
+                throw new IllegalArgumentException("interval must not be below 0");
+            }
+            this.interval = interval;
+            return this;
+        }
+
+        public Builder iterations(long iterations) {
+            if (iterations < -1) {
+                throw new IllegalArgumentException("iterations must not be below -1");
+            }
+            this.iterations = iterations;
+            return this;
+        }
+
+        public Builder infinite() {
+            return iterations(-1);
+        }
+
+        public Task build() {
+            if (consumer == null) {
+                throw new IllegalStateException("consumer must be set");
+            }
+            return new Task(consumer, delay, interval, iterations);
+        }
+
     }
 
 }

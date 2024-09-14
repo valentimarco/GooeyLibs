@@ -28,6 +28,7 @@ val commonManifest = java.manifest {
 }
 
 val main by sourceSets
+
 val mixins by sourceSets.registering {
     compileClasspath += main.compileClasspath
     runtimeClasspath += main.runtimeClasspath

@@ -19,32 +19,27 @@
 
 package ca.landonjw.gooeylibs2.api.tasks;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Function;
+import java.util.*;
 
 public final class TaskManager {
 
-    private final Map<UUID, Task> tasks = new HashMap<>();
+    private static TaskManager INSTANCE;
+    private List<Task> tasks = new ArrayList<>();
 
-    public Task schedule(Function<Task.TaskBuilder, Task> provider) {
-        Task.TaskBuilder builder = new GooeyTask.GooeyTaskBuilder();
-        Task task = provider.apply(builder);
-
-        this.tasks.put(UUID.randomUUID(), task);
-        return task;
+    void register(Task task) {
+        this.tasks.add(task);
     }
 
-    public void execute() {
-        new HashMap<>(this.tasks).forEach((key, task) -> {
-            GooeyTask gooey = (GooeyTask) task;
-            gooey.tick();
+    public void tick() {
+        this.tasks.forEach(Task::tick);
+        this.tasks = this.tasks.stream().filter(Task::isExpired).toList();
+    }
 
-            if (gooey.isExpired()) {
-                this.tasks.remove(key);
-            }
-        });
+    public static TaskManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new TaskManager();
+        }
+        return INSTANCE;
     }
 
 }

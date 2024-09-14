@@ -19,9 +19,7 @@
 
 package ca.landonjw.gooeylibs.mixins;
 
-import ca.landonjw.gooeylibs2.api.bridge.TaskScheduler;
-import ca.landonjw.gooeylibs2.api.tasks.Task;
-import ca.landonjw.gooeylibs2.bootstrap.GooeyBootstrapper;
+import ca.landonjw.gooeylibs2.api.tasks.TaskManager;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,17 +27,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin implements TaskScheduler {
-
-    @Override
-    public Task schedule(Runnable task) {
-        throw new IllegalStateException("Gooey is ready to schedule");
-    }
+public abstract class MinecraftServerMixin {
 
     @Inject(method = "tickServer", at = @At("TAIL"))
     private void gooeylibs$onTick(CallbackInfo ci) {
-        GooeyBootstrapper bootstrapper = GooeyBootstrapper.instance();
-        bootstrapper.taskManager().executeTasks();
+        TaskManager.getInstance().tick();
     }
 
 }
