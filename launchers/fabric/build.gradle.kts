@@ -15,3 +15,14 @@ dependencies {
         "fabric-command-api-v2"
     ).forEach { modImplementation(fabricApi.module(it, "0.103.0+1.21.1")) }
 }
+
+tasks {
+    processResources {
+        val version: String = rootProject.property("modVersion") as String
+        inputs.property("version", version)
+
+        filesMatching("fabric.mod.json") {
+            expand("version" to version)
+        }
+    }
+}

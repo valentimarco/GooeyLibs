@@ -35,6 +35,17 @@ tasks.getByName<Test>("test") {
     useJUnitPlatform()
 }
 
+tasks {
+    processResources {
+        val version: String = rootProject.property("modVersion") as String
+        inputs.property("version", version)
+
+        filesMatching("fabric.mod.json") {
+            expand("version" to version)
+        }
+    }
+}
+
 publishing {
     repositories {
         maven("https://maven.impactdev.net/repository/development/") {
