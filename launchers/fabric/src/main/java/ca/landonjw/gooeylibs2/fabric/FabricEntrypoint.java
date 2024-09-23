@@ -9,8 +9,6 @@ import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.SharedConstants;
-import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
