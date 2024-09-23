@@ -12,11 +12,10 @@ repositories {
 dependencies {
     implementation(libs.kotlin.jvm)
     implementation(libs.loom)
-    implementation(libs.architectury)
     implementation(libs.indra)
     implementation(libs.licenser)
     implementation(libs.shadow)
 
     implementation(libs.loom)
-    implementation(libs.architectury)
+    implementation(libs.neo.moddev)
 }

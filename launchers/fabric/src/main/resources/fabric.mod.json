@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "gooeylibs",
+  "version": "${version}",
+  "name": "GooeyLibs",
+  "authors": [
+    "NickImpact",
+    "landonjw"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "ca.landonjw.gooeylibs2.fabric.FabricEntrypoint"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "minecraft": ">=1.21.1",
+    "java": ">=21"
+  }
+}

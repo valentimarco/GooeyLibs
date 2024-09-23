@@ -20,6 +20,7 @@
 package ca.landonjw.gooeylibs2.api.tasks;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class TaskManager {
 
@@ -32,7 +33,7 @@ public final class TaskManager {
 
     public void tick() {
         this.tasks.forEach(Task::tick);
-        this.tasks = this.tasks.stream().filter(Task::isExpired).toList();
+        this.tasks = this.tasks.stream().filter(task -> !task.isExpired()).collect(Collectors.toList());
     }
 
     public static TaskManager getInstance() {

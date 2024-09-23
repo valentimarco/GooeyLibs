@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -13,5 +15,5 @@ pluginManagement {
 rootProject.name = "GooeyLibs"
 
 include("api")
-//include("forge")
+include("launchers:fabric")
 //include("fabric")

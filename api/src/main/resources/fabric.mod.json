@@ -1,18 +1,14 @@
 {
   "schemaVersion": 1,
-  "id": "gooeylibs",
+  "id": "gooeylibs-api",
   "version": "${version}",
-  "name": "GooeyLibs",
+  "name": "GooeyLibs API",
   "authors": [
-    "NickImpact"
+    "NickImpact",
+    "landonjw"
   ],
   "license": "MIT",
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "ca.landonjw.gooeylibs2.GooeyLibsFabric"
-    ]
-  },
   "mixins": [
     "mixins.gooeylibs.json"
   ],
@@ -21,6 +17,7 @@
     "minecraft": ">=1.21.1",
     "java": ">=21"
   },
+  "accessWidener": "gooeylibs.accesswidener",
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/server/MinecraftServer": ["ca/landonjw/gooeylibs2/api/bridge/TaskScheduler"]

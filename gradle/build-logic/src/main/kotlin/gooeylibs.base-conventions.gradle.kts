@@ -6,9 +6,6 @@ plugins {
     id("net.kyori.indra")
     id("net.kyori.indra.git")
     id("com.github.johnrengelman.shadow")
-
-    id("dev.architectury.loom")
-    id("architectury-plugin")
 }
 
 indra {
