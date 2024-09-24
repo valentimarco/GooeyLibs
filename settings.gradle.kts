@@ -16,4 +16,5 @@ rootProject.name = "GooeyLibs"
 
 include("api")
 include("launchers:fabric")
+include("launchers:neoforge")
 //include("fabric")

@@ -1,0 +1,11 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "	GPL-3.0-or-later"
+logofile = "greeen_blob.png"
+authors = "NickImpact, landonjw"
+
+[[mods]]
+modId = "gooeylibs"
+version = "${version}"
+displayName = "GooeyLibs"
+description = "A server-side UI library"

@@ -43,6 +43,10 @@ tasks {
         filesMatching("fabric.mod.json") {
             expand("version" to version)
         }
+
+        filesMatching("META-INF/neoforge.mods.toml") {
+            expand("version" to version)
+        }
     }
 }
 

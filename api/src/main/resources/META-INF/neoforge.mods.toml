@@ -1,0 +1,14 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "	GPL-3.0-or-later"
+logofile = "greeen_blob.png"
+authors = "NickImpact, landonjw"
+
+[[mixins]]
+config = "mixins.gooeylibs.json"
+
+[[mods]]
+modId = "gooeylibs_api"
+version = "${version}"
+displayName = "GooeyLibs API"
+description = "A server-side UI library"
