@@ -19,6 +19,7 @@
 
 package ca.landonjw.gooeylibs2.api;
 
+import ca.landonjw.gooeylibs2.api.accessors.ServerPlayerAccessor;
 import ca.landonjw.gooeylibs2.api.container.GooeyContainer;
 import ca.landonjw.gooeylibs2.api.page.Page;
 import ca.landonjw.gooeylibs2.api.tasks.Task;
@@ -35,7 +36,7 @@ public class UIManager {
         Task.builder()
                 .execute((task) -> {
                     timeOutTicks.getAndDecrement();
-                    if (player.containerMenu.containerId == player.containerCounter || timeOutTicks.get() <= 0) {
+                    if (player.containerMenu.containerId == ((ServerPlayerAccessor) player).gooeylibs$getContainerCounter() || timeOutTicks.get() <= 0) {
                         openUIForcefully(player, page);
                         task.setExpired();
                     }

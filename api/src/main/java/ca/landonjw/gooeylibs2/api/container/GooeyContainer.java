@@ -19,6 +19,7 @@
 
 package ca.landonjw.gooeylibs2.api.container;
 
+import ca.landonjw.gooeylibs2.api.accessors.ServerPlayerAccessor;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.ButtonAction;
 import ca.landonjw.gooeylibs2.api.button.ButtonClick;
@@ -193,14 +194,15 @@ public class GooeyContainer extends AbstractContainerMenu {
     public void open() {
         player.doCloseContainer();
         player.containerMenu = this;
-        player.containerCounter = player.containerMenu.containerId;
+
+        ((ServerPlayerAccessor) player).gooeylibs$setContainerCounter(player.containerMenu.containerId);
         openWindow();
         page.onOpen(new PageAction(player, page));
     }
 
     private void openWindow() {
         ClientboundOpenScreenPacket openWindow = new ClientboundOpenScreenPacket(
-                player.containerCounter,
+                ((ServerPlayerAccessor) player).gooeylibs$getContainerCounter(),
                 page.getTemplate().getTemplateType().getContainerType(page.getTemplate()),
                 page.getTitle()
         );

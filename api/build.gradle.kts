@@ -1,22 +1,10 @@
 plugins {
     id("gooeylibs.base-conventions")
-    id("maven-publish")
     id("net.neoforged.moddev") version "1.0.11"
 }
 
-sourceSets {
-    main {
-        java.srcDirs(
-            "src/mixins/java"
-        )
-        resources.srcDirs(
-            "src/mixins/resources"
-        )
-    }
-}
-
 neoForge {
-    neoFormVersion = "1.21-20240613.152323"
+    neoFormVersion = "1.21.1-20240808.144430"
 }
 
 repositories {
@@ -29,6 +17,20 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+}
+
+sourceSets {
+    main {
+        java.srcDirs(
+            "src/accessor/java",
+            "src/mixin/java"
+        )
+
+        resources.srcDirs(
+            "src/accessor/resources",
+            "src/mixin/resources"
+        )
+    }
 }
 
 tasks.getByName<Test>("test") {

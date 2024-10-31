@@ -1,0 +1,7 @@
+{
+  "parent": "gooeylibs.parent.mixins.json",
+  "package": "ca.landonjw.gooeylibs2.api.accessors",
+  "mixins": [
+    "ServerPlayerAccessor"
+  ]
+}

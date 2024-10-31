@@ -9,15 +9,15 @@
   ],
   "license": "MIT",
   "environment": "*",
+  "icon": "green_blob.png",
   "mixins": [
-    "mixins.gooeylibs.json"
+    "gooeylibs.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.0",
     "minecraft": ">=1.21.1",
     "java": ">=21"
   },
-  "accessWidener": "gooeylibs.accesswidener",
   "custom": {
     "loom:injected_interfaces": {
       "net/minecraft/server/MinecraftServer": ["ca/landonjw/gooeylibs2/api/bridge/TaskScheduler"]

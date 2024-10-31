@@ -17,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ca.landonjw.gooeylibs.mixins;
+package ca.landonjw.gooeylibs2.api.mixins;
 
 import ca.landonjw.gooeylibs2.api.container.GooeyContainer;
 import net.minecraft.server.level.ServerPlayer;

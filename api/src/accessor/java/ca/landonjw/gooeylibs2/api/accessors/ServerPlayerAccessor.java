@@ -17,21 +17,19 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package ca.landonjw.gooeylibs.mixins;
+package ca.landonjw.gooeylibs2.api.accessors;
 
-import ca.landonjw.gooeylibs2.api.tasks.TaskManager;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(MinecraftServer.class)
-public abstract class MinecraftServerMixin {
+@Mixin(ServerPlayer.class)
+public interface ServerPlayerAccessor {
 
-    @Inject(method = "tickServer", at = @At("TAIL"))
-    private void gooeylibs$onTick(CallbackInfo ci) {
-        TaskManager.getInstance().tick();
-    }
+    @Accessor("containerCounter")
+    int gooeylibs$getContainerCounter();
+
+    @Accessor("containerCounter")
+    void gooeylibs$setContainerCounter(int containerCounter);
 
 }
