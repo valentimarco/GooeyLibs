@@ -11,7 +11,8 @@
   "environment": "*",
   "icon": "green_blob.png",
   "mixins": [
-    "gooeylibs.mixins.json"
+    "gooeylibs.mixins.json",
+    "gooeylibs.accessor.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.0",
