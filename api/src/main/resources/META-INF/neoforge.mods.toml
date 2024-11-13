@@ -5,7 +5,10 @@ logofile = "greeen_blob.png"
 authors = "NickImpact, landonjw"
 
 [[mixins]]
-config = "mixins.gooeylibs.json"
+config = "gooeylibs.mixins.json"
+
+[[mixins]]
+config = "gooeylibs.accessor.mixins.json"
 
 [[mods]]
 modId = "gooeylibs_api"

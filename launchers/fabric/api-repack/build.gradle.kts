@@ -1,4 +1,5 @@
 plugins {
+    id("gooeylibs.base-conventions")
     alias(libs.plugins.loom)
     alias(libs.plugins.indra)
 }
@@ -33,5 +34,16 @@ tasks {
 
     javadoc {
         enabled = false
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("fabric-api-repack") {
+            from(components["java"])
+            groupId = "ca.landonjw.gooeylibs"
+            artifactId = "fabric-api-repack"
+            version = rootProject.version.toString()
+        }
     }
 }

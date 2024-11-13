@@ -18,10 +18,5 @@
     "fabricloader": ">=0.16.0",
     "minecraft": ">=1.21.1",
     "java": ">=21"
-  },
-  "custom": {
-    "loom:injected_interfaces": {
-      "net/minecraft/server/MinecraftServer": ["ca/landonjw/gooeylibs2/api/bridge/TaskScheduler"]
-    }
   }
 }

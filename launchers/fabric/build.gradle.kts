@@ -34,3 +34,14 @@ tasks {
         archiveVersion.set(version)
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("fabric") {
+            from(components["java"])
+            groupId = "ca.landonjw.gooeylibs"
+            artifactId = "fabric"
+            version = rootProject.version.toString()
+        }
+    }
+}
